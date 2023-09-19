@@ -3,14 +3,18 @@ import { Note as NoteModel } from './models/notes';
 import Note from "./components/Note"
 import { Col, Container, Row } from 'react-bootstrap';
 import styles from "./styles/NotePage.module.css"
+import * as NotesApi from "./network/notes_api"
+import AddNoteDialog from './components/AddNoteDialog';
 
 function App() {
+  
   const [notes, setNotes] = useState<NoteModel[]>([]);
+  const [showAddNoteDialog, setShowAddNoteDialog] = useState(true)
+
   useEffect(() => {
     async function loadNotes() {
       try {
-        const response = await fetch("http://localhost:5000/api/notes", {method: "GET"})
-        const notes = await response.json()
+        const notes = await NotesApi.fetchNotes()
         setNotes(notes)
       } catch (error) {
         console.error(error)
@@ -29,6 +33,9 @@ function App() {
         </Col>
       ))}
       </Row>
+      {
+        showAddNoteDialog && <AddNoteDialog/>
+      }
     </Container>
   );
 }
